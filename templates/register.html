@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ISKAN Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input-focus {
+            transition: all 0.2s ease;
+        }
+
+        .form-input-focus:focus {
+            background: white;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
+
+    <header class="absolute top-0 left-0 w-full z-50 px-6 lg:px-12 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div
+                class="h-9 w-9 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black tracking-wider shadow-md shadow-blue-500/20">
+                IS</div>
+            <span class="font-bold text-lg tracking-tight lg:text-white max-lg:text-slate-800">ISKAN Studio</span>
+        </div>
+        <nav class="flex items-center gap-6 text-sm font-medium lg:text-white/90 max-lg:text-slate-600">
+            <a href="/help" class="hover:underline transition">Help</a>
+            {% if session.user_id %}
+            <a href="/logout"
+                class="bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-white border border-white/10 transition">Logout</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="w-full flex min-h-screen flex-col lg:flex-row">
+
+        <div
+            class="relative hidden lg:flex lg:w-5/12 bg-gradient-to-br from-slate-950 via-blue-900 to-indigo-950 flex-col justify-between p-12 xl:p-20 text-white overflow-hidden">
+            <div
+                class="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+            </div>
+
+            <div class="h-20"></div>
+
+            <div class="relative z-10">
+                <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-tight mb-6">
+                    Join the future of <br />
+                    <span
+                        class="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent italic">Inventory
+                        Design</span>
+                </h1>
+                <p class="text-lg text-slate-300 mb-12 leading-relaxed max-w-md">
+                    Start designing professional barcodes with live export, team syncing, and full API integration.
+                </p>
+
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300 border border-blue-500/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white uppercase text-xs tracking-widest mb-1">Professional
+                                Templates</h4>
+                            <p class="text-sm text-slate-400">Industry-standard layouts ready for asset tracking and
+                                logistics.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300 border border-blue-500/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white uppercase text-xs tracking-widest mb-1">Seamless
+                                Integrations</h4>
+                            <p class="text-sm text-slate-400">Export to PDF, PNG, or direct cloud push via Webhooks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative z-10 flex items-center gap-4 text-sm text-slate-400">
+                <div class="flex -space-x-2">
+                    <div class="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                    <div class="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                    <div class="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-500"></div>
+                </div>
+                <span>Trusted by 2,000+ logistics teams</span>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-7/12 flex items-center justify-center px-6 py-24 lg:p-12 xl:p-20 bg-slate-50">
+            <div
+                class="w-full max-w-2xl bg-white rounded-3xl p-8 lg:p-12 shadow-2xl shadow-slate-200/60 border border-slate-100">
+
+                <div class="mb-10">
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Create an account</h2>
+                    <p class="text-slate-500">Sign up and try ISKAN Studio free for 14 days. No credit card required.
+                    </p>
+                </div>
+
+                <form method="POST" id="registerForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Full
+                                name</label>
+                            <input type="text" name="full_name" required placeholder="Jane Doe"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email
+                                Address</label>
+                            <input type="email" name="email" required placeholder="you@company.com"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Password</label>
+                                <input type="password" id="password" name="password" required placeholder="••••••••"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Confirm
+                                    Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required
+                                    placeholder="••••••••"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                                <p id="pwError" class="text-xs text-rose-500 hidden mt-2 font-medium">Passwords do not
+                                    match.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Phone
+                                    (optional)</label>
+                                <input type="tel" name="phone" placeholder="+63 912 345 6789"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Company
+                                    (optional)</label>
+                                <input type="text" name="company" placeholder="Acme, Inc."
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 form-input-focus">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Account
+                            type</label>
+                        <select name="role"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none transition-all duration-200 appearance-none form-input-focus">
+                            <option value="individual">Individual Designer</option>
+                            <option value="company">Enterprise / Logistics Team</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-start">
+                        <input id="terms" type="checkbox" name="accept_terms"
+                            class="h-4 w-4 mt-0.5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" required>
+                        <label for="terms" class="ml-3 text-sm text-slate-500">
+                            I agree to the <a href="/terms" class="text-blue-600 font-semibold hover:underline">Terms of
+                                Service</a> and
+                            <a href="/privacy" class="text-blue-600 font-semibold hover:underline">Privacy Policy</a>.
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98]">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="mt-10 pt-6 border-t border-slate-100 text-center">
+                    <p class="text-sm text-slate-500">
+                        Already have an account?
+                        <a href="/login" class="text-blue-600 font-bold hover:underline ml-1">Log in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const pw = document.getElementById('password');
+        const cpw = document.getElementById('confirm_password');
+        const pwError = document.getElementById('pwError');
+
+        function validatePasswords() {
+            if (!pw || !cpw) return true;
+            if (cpw.value.length > 0 && pw.value !== cpw.value) {
+                pwError.classList.remove('hidden');
+                cpw.classList.add('border-rose-300', 'bg-rose-50');
+                return false;
+            }
+            pwError.classList.add('hidden');
+            cpw.classList.remove('border-rose-300', 'bg-rose-50');
+            return true;
+        }
+
+        form?.addEventListener('submit', function (e) {
+            if (!validatePasswords()) {
+                e.preventDefault();
+                cpw.focus();
+            }
+        });
+
+        cpw?.addEventListener('input', validatePasswords);
+        pw?.addEventListener('input', validatePasswords);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Management - ISKAN Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
+    <!-- Global Header -->
+    <header
+      class="fixed top-0 left-0 w-full z-50 bg-slate-900 border-b border-slate-800 px-6 lg:px-12 py-4 flex items-center justify-between"
+    >
+      <a href="/" class="flex items-center gap-3 sm:gap-4 group shrink-0">
+        <div
+          class="h-9 w-9 bg-rose-600 text-white rounded-xl flex items-center justify-center font-black tracking-wider shadow-md shadow-rose-500/20 group-hover:rotate-3 transition-transform"
+        >
+          AD
+        </div>
+        <span class="font-bold text-lg tracking-tight text-white"
+          >ISKAN Admin</span
+        >
+      </a>
+
+      <nav
+        class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-slate-300"
+      >
+        <a href="/" class="hover:text-white transition">Home</a>
+
+        <a
+          href="/designer"
+          class="inline-flex items-center gap-1.5 hover:text-white transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6 w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25"
+            />
+          </svg>
+
+          <span>Designer Studio</span>
+        </a>
+
+        <a href="/profile" class="hover:text-white transition">My Account</a>
+
+        {% if session.user_id %}
+        <a
+          href="/logout"
+          class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-white border border-slate-700 transition"
+        >
+          Logout
+        </a>
+        {% endif %}
+      </nav>
+    </header>
+
+    <div class="flex">
+      <!-- Sidebar Navigation -->
+      <aside
+        class="w-64 bg-white border-r border-slate-200 h-screen sticky top-0 hidden lg:block pt-24 px-6"
+      >
+        <div class="space-y-1">
+          <p
+            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4"
+          >
+            Command Center
+          </p>
+          <a
+            href="/admin"
+            class="flex items-center gap-3 px-3 py-2 text-sm font-bold text-rose-600 bg-rose-50 rounded-lg transition"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+            Subscription Queue
+          </a>
+          <a
+            href="/designer"
+            class="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg transition"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+            Designer Studio
+          </a>
+        </div>
+      </aside>
+
+      <main class="flex-1 px-6 lg:px-12 pt-28 pb-16">
+        <!-- Hero Banner -->
+        <div
+          class="bg-slate-900 rounded-3xl p-8 mb-8 text-white shadow-xl shadow-slate-200 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"
+          ></div>
+          <div class="relative z-10">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 mb-4 uppercase tracking-wider"
+            >
+              System Administrator Access
+            </span>
+            <h1 class="text-3xl font-black tracking-tight mb-2">
+              Admin Dashboard
+            </h1>
+            <p class="text-slate-400 text-sm max-w-md leading-relaxed">
+              Review pending payments and manage user access. Approving a
+              subscription automatically enables high-resolution features for
+              the customer.
+            </p>
+          </div>
+          <div class="relative z-10 text-right">
+            <div
+              class="text-rose-500 font-mono text-xs font-bold uppercase tracking-widest mb-1"
+            >
+              Server Status
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"
+              ></span>
+              <span class="text-xl font-black text-white">Operational</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
+          >
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1"
+              >Pending Review</span
+            >
+            <span class="text-xl font-black text-amber-600"
+              >{{ subscriptions|length }} Requests</span
+            >
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
+          >
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1"
+              >Active Subscribers</span
+            >
+            <span class="text-xl font-black text-slate-900"
+              >{{ active_users }} Users</span
+            >
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
+          >
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1"
+              >Total Revenue</span
+            >
+            <span class="text-xl font-black text-emerald-600"
+              >₱{{ total_approved_subs|sum(attribute='amount') }}
+              <small class="text-[10px] text-slate-400">est</small></span
+            >
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
+          >
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1"
+              >System Time</span
+            >
+            <span class="text-xl font-black text-slate-900"
+              >{{ now.strftime('%H:%M') }}</span
+            >
+          </div>
+        </div>
+
+        <!-- Admin Search & Filter Bar -->
+        <div class="mb-8 flex flex-col md:flex-row gap-4">
+          <div class="relative w-full md:w-48">
+            <select
+              id="adminStatusFilter"
+              class="w-full appearance-none bg-white border border-slate-200 px-4 py-3 pr-10 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm cursor-pointer"
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+            </select>
+            <div
+              class="absolute right-4 top-3.5 pointer-events-none text-slate-400"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <div class="relative max-w-xl flex-1">
+            <input
+              type="text"
+              id="adminSearchInput"
+              placeholder="Search by email, reference number, or plan type..."
+              class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none transition-all shadow-sm"
+            />
+            <div class="absolute left-4 top-3.5 text-slate-400">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8">
+          <!-- Pending Approvals Section -->
+          <div id="section-pending" class="space-y-4">
+            <h3
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2"
+            >
+              <span class="w-2 h-2 bg-amber-400 rounded-full"></span> Approval
+              Queue
+            </h3>
+            <div
+              class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-slate-50/50 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100"
+                  >
+                    <th class="py-4 px-8">User / Plan</th>
+                    <th class="py-4 px-4">Ref Number</th>
+                    <th class="py-4 px-4 text-center">Date</th>
+                    <th class="py-4 px-8 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                  {% if not subscriptions %}
+                  <tr>
+                    <td
+                      colspan="4"
+                      class="py-12 text-center text-slate-400 italic"
+                    >
+                      No pending subscriptions found in queue.
+                    </td>
+                  </tr>
+                  {% endif %} {% for sub in subscriptions %}
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-5 px-8">
+                      <div class="font-bold text-slate-900">
+                        {{ sub.user.email }}
+                      </div>
+                      <div
+                        class="text-[10px] text-slate-400 font-medium -mt-0.5"
+                      >
+                        ID: {{ sub.user_id }}
+                      </div>
+                      <div
+                        class="text-[10px] text-blue-600 font-black uppercase tracking-tighter"
+                      >
+                        {{ sub.plan_type }} Plan
+                      </div>
+                    </td>
+                    <td
+                      class="py-5 px-4 font-mono text-[11px] text-slate-600 bg-slate-50/30"
+                    >
+                      {{ sub.reference_number }}
+                    </td>
+                    <td class="py-5 px-4 text-center text-slate-500 text-xs">
+                      {{ sub.created_at.strftime('%Y-%m-%d') }}
+                    </td>
+                    <td class="py-5 px-8 text-right">
+                      <div class="flex justify-end items-center gap-2">
+                        <button
+                          onclick="openHistory({{ sub.user_id }}, '{{ sub.user.email }}', '{{ sub.user.full_name or '—' }}', '{{ sub.user.company_name or '—' }}', '{{ sub.user.phone_number or '—' }}')"
+                          class="px-3 py-1.5 bg-slate-50 text-slate-400 text-[10px] font-black rounded-lg border border-slate-100 hover:bg-slate-200 hover:text-slate-700 transition-all"
+                        >
+                          HISTORY
+                        </button>
+                        <button
+                          onclick="updateSub({{ sub.id }}, 'approve')"
+                          class="px-3 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-lg border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all"
+                        >
+                          APPROVE
+                        </button>
+                        <button
+                          onclick="updateSub({{ sub.id }}, 'reject')"
+                          class="px-3 py-1.5 bg-rose-50 text-rose-600 text-[10px] font-black rounded-lg border border-rose-100 hover:bg-rose-600 hover:text-white transition-all"
+                        >
+                          REJECT
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Subscriber Records Section -->
+          <div id="section-records" class="space-y-4">
+            <h3
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2"
+            >
+              <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
+              Subscriber Management
+            </h3>
+            <div
+              class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-slate-50/50 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100"
+                  >
+                    <th class="py-4 px-8">Subscriber</th>
+                    <th class="py-4 px-4">Plan Validity</th>
+                    <th class="py-4 px-4 text-center">Reference</th>
+                    <th class="py-4 px-8 text-right">Management</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                  {% if not subscribers %}
+                  <tr>
+                    <td
+                      colspan="4"
+                      class="py-12 text-center text-slate-400 italic"
+                    >
+                      No active memberships found.
+                    </td>
+                  </tr>
+                  {% endif %} {% for sub in subscribers %}
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-5 px-8">
+                      <div class="font-bold text-slate-900 capitalize">
+                        {{ sub.plan_type }} Subscriber
+                      </div>
+                      <div class="text-[10px] text-slate-400 font-medium">
+                        {{ sub.user.email }} (ID: {{ sub.user_id }})
+                      </div>
+                    </td>
+                    <td class="py-5 px-4">
+                      <div class="text-xs font-bold text-slate-700">
+                        Ends: {{ sub.ends_at.strftime('%b %d, %Y') if
+                        sub.ends_at else 'Forever' }}
+                      </div>
+                      {% if sub.ends_at and sub.ends_at < now %}
+                      <span
+                        class="status-badge text-[9px] font-black text-rose-500 uppercase"
+                      >
+                        Expired</span
+                      >
+                      {% else %}
+                      <span
+                        class="status-badge text-[9px] font-black text-emerald-500 uppercase"
+                        >Current</span
+                      >
+                      {% endif %}
+                    </td>
+                    <td
+                      class="py-5 px-4 text-center font-mono text-[10px] text-slate-400"
+                    >
+                      {{ sub.reference_number }}
+                    </td>
+                    <td class="py-5 px-8 text-right">
+                      <div class="flex justify-end items-center">
+                        <button
+                          onclick="openHistory({{ sub.user_id }}, '{{ sub.user.email }}', '{{ sub.user.full_name or '—' }}', '{{ sub.user.company_name or '—' }}', '{{ sub.user.phone_number or '—' }}')"
+                          class="px-3 py-1.5 bg-slate-50 text-slate-400 text-[10px] font-black rounded-lg border border-slate-100 hover:bg-slate-200 hover:text-slate-700 transition-all mr-2"
+                        >
+                          HISTORY
+                        </button>
+                        {% if not sub.ends_at or sub.ends_at >= now %}
+                        <button
+                          onclick="updateSub({{ sub.id }}, 'deactivate')"
+                          class="px-3 py-1.5 bg-rose-50 text-rose-600 text-[10px] font-black rounded-lg border border-rose-100 hover:bg-rose-600 hover:text-white transition-all"
+                        >
+                          REVOKE ACCESS
+                        </button>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- History Modal -->
+    <div
+      id="historyModal"
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-3xl w-full max-w-4xl p-8 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3
+              id="historyModalTitle"
+              class="text-xl font-black text-slate-900"
+            >
+              Subscription History
+            </h3>
+            <p
+              class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1"
+            >
+              User Profile & Transaction Log
+            </p>
+          </div>
+          <button
+            onclick="
+              document.getElementById('historyModal').classList.add('hidden')
+            "
+            class="text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- User Info Header -->
+        <div
+          id="historyUserInfo"
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-5 bg-slate-50 rounded-2xl border border-slate-100"
+        >
+          <!-- Populated via JS -->
+        </div>
+
+        <div class="max-h-96 overflow-y-auto pr-2">
+          <table class="w-full text-left border-collapse">
+            <thead class="sticky top-0 bg-white">
+              <tr
+                class="text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100"
+              >
+                <th class="py-3 px-2">Plan</th>
+                <th class="py-3 px-2">Reference</th>
+                <th class="py-3 px-2 text-center">Date</th>
+                <th class="py-3 px-2 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyContent" class="divide-y divide-slate-50"></tbody>
+          </table>
+        </div>
+        <button
+          onclick="
+            document.getElementById('historyModal').classList.add('hidden')
+          "
+          class="w-full mt-6 py-3 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition shadow-lg"
+        >
+          Close View
+        </button>
+      </div>
+    </div>
+
+    <script>
+        const allHistory = [
+            {% for sub in all_subscriptions %}
+            {
+                userId: {{ sub.user_id }},
+                plan: "{{ sub.plan_type }}",
+                ref: "{{ sub.reference_number }}",
+                status: "{{ sub.status }}",
+                isExpired: {{ 'true' if sub.status == 'approved' and sub.ends_at and sub.ends_at < now else 'false' }},
+                amount: {{ sub.amount or 0 }},
+                date: "{{ sub.created_at.strftime('%Y-%m-%d') }}",
+                ends: "{{ sub.ends_at.strftime('%b %d, %Y') if sub.ends_at else 'N/A' }}"
+            },
+            {% endfor %}
+      ];
+
+        function openHistory(userId, email, name, company, phone) {
+            const modal = document.getElementById('historyModal');
+            document.getElementById('historyModalTitle').innerText = `History: ${email}`;
+
+            // Populate User Info Section
+            document.getElementById('historyUserInfo').innerHTML = `
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase block">Full Name</span>
+                    <span class="text-sm font-bold text-slate-900">${name}</span>
+                </div>
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase block">Company</span>
+                    <span class="text-sm font-bold text-slate-900">${company}</span>
+                </div>
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase block">Phone</span>
+                    <span class="text-sm font-bold text-slate-900">${phone}</span>
+                </div>
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase block">User ID</span>
+                    <span class="text-sm font-bold text-slate-900">#${userId}</span>
+                </div>
+            `;
+
+            const container = document.getElementById('historyContent');
+
+            // Use Number() to ensure type consistency during filtering
+            const filtered = allHistory.filter(h => Number(h.userId) === Number(userId));
+            container.innerHTML = filtered.map(h => {
+                let displayStatus = h.status;
+                let statusClass = 'bg-rose-50 text-rose-600'; // Default for revoked
+
+                if (h.status === 'approved') {
+                    if (h.isExpired) {
+                        displayStatus = 'expired';
+                        statusClass = 'bg-slate-100 text-slate-500';
+                    } else {
+                        displayStatus = 'active';
+                        statusClass = 'bg-emerald-50 text-emerald-600';
+                    }
+                } else if (h.status === 'pending') {
+                    statusClass = 'bg-amber-50 text-amber-600';
+                }
+
+                return `
+              <tr class="text-xs">
+                  <td class="py-4 px-2"><span class="font-bold capitalize">${h.plan}</span><br><span class="text-[9px] text-slate-400">Ends: ${h.ends}</span></td>
+                  <td class="py-4 px-2 font-mono text-slate-500">${h.ref}</td>
+                  <td class="py-4 px-2 text-center text-slate-500">${h.date}</td>
+                  <td class="py-4 px-2 text-right">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${statusClass}">
+                            ${displayStatus}
+                      </span>
+                  </td>
+              </tr>
+            `}).join('');
+
+            modal.classList.remove('hidden');
+        }
+
+        // Global Admin Dashboard Search & Filter Logic
+        function filterAdminDashboard() {
+            const query = document.getElementById('adminSearchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('adminStatusFilter').value;
+
+            // Handle Section Visibility based on status dropdown
+            const pendingSection = document.getElementById('section-pending');
+            const recordsSection = document.getElementById('section-records');
+
+            if (statusFilter === 'all') {
+                pendingSection.style.display = '';
+                recordsSection.style.display = '';
+            } else if (statusFilter === 'pending') {
+                pendingSection.style.display = '';
+                recordsSection.style.display = 'none';
+            } else {
+                pendingSection.style.display = 'none';
+                recordsSection.style.display = '';
+            }
+
+            // Handle Row Filtering based on text query (within visible sections)
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                if (row.querySelector('td[colspan]')) return;
+
+                const text = row.textContent.toLowerCase();
+                const isMatch = text.includes(query);
+
+                let statusMatch = true;
+                if (statusFilter === 'active' || statusFilter === 'expired') {
+                    const badge = row.querySelector('.status-badge');
+                    if (badge) {
+                        const val = badge.textContent.toLowerCase();
+                        statusMatch = (statusFilter === 'active' && val.includes('current')) ||
+                            (statusFilter === 'expired' && val.includes('expired'));
+                    } else {
+                        statusMatch = false; // Pending rows in Records section (shouldn't happen with current logic)
+                    }
+                }
+
+                row.style.display = (isMatch && statusMatch) ? '' : 'none';
+            });
+        }
+
+        document.getElementById('adminSearchInput').addEventListener('input', filterAdminDashboard);
+        document.getElementById('adminStatusFilter').addEventListener('change', filterAdminDashboard);
+
+        async function updateSub(subId, action) {
+            let endpoint = '';
+            let confirmationMsg = '';
+
+            if (action === 'approve') {
+                endpoint = `/api/admin/approve/${subId}`;
+                confirmationMsg = 'Approve this subscription and activate user?';
+            } else if (action === 'reject') {
+                endpoint = `/api/admin/reject/${subId}`;
+                confirmationMsg = 'Reject and delete this request?';
+            } else if (action === 'deactivate') {
+                endpoint = `/api/admin/deactivate/${subId}`;
+                confirmationMsg = 'Revoke this users active status?';
+            }
+
+            if (!confirm(confirmationMsg)) return;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (err) {
+                console.error("Admin Action Error:", err);
+                alert("Failed to process request.");
+            }
+        }
+    </script>
+  </body>
+</html>

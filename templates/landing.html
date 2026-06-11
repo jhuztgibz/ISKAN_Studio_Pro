@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISKAN Studio - Enterprise Barcode & QR Design Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-blob {
+            filter: blur(100px);
+            opacity: 0.2;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50/50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden antialiased">
+
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <div
+                    class="h-10 w-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/20 group-hover:rotate-6 transition-transform">
+                    IS
+                </div>
+                <span class="font-bold text-xl tracking-tight">ISKAN Studio</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="#features" class="hover:text-blue-600 transition">Features</a>
+                <a href="#how-it-works" class="hover:text-blue-600 transition">How it Works</a>
+                <a href="#pricing" class="hover:text-blue-600 transition">Pricing</a>
+
+                <span class="h-4 w-px bg-slate-200"></span>
+
+                {% if user %}
+                <a href="/designer"
+                    class="bg-slate-900 text-white px-5 py-2.5 rounded-xl hover:bg-slate-800 transition shadow-md shadow-slate-200">Go
+                    to Studio</a>
+                {% else %}
+                <a href="/login" class="hover:text-slate-900 transition">Login</a>
+                <a href="/register"
+                    class="bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-md shadow-blue-500/20">Get
+                    Started Free</a>
+                {% endif %}
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden text-slate-600 focus:outline-none p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 p-6 flex flex-col gap-4 shadow-xl">
+            <a href="#features" class="font-medium text-slate-600 hover:text-blue-600">Features</a>
+            <a href="#how-it-works" class="font-medium text-slate-600 hover:text-blue-600">How it Works</a>
+            <a href="#pricing" class="font-medium text-slate-600 hover:text-blue-600">Pricing</a>
+            <hr class="border-slate-100">
+            {% if user %}
+            <a href="/designer" class="w-full text-center bg-slate-900 text-white px-5 py-3 rounded-xl">Go to Studio</a>
+            {% else %}
+            <a href="/login" class="w-full text-center font-medium text-slate-600 py-2">Login</a>
+            <a href="/register"
+                class="w-full text-center bg-blue-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-blue-500/20">Get
+                Started Free</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <section class="relative pt-36 pb-24 px-6 overflow-hidden bg-white">
+        <div
+            class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[350px] bg-gradient-to-tr from-blue-400 to-purple-400 hero-blob rounded-full">
+        </div>
+
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold mb-8">
+                <span class="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
+                NEW: API Integration & Batch Printing Now Live
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                The Enterprise Barcode <br> <span class="gradient-text">& QR Design Studio</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+                Design, generate, and manage professional labels in seconds. From individual assets to massive batch
+                prints, ISKAN Studio simplifies your inventory workflow.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <a href="/register"
+                    class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 hover:scale-[1.02] transition shadow-xl shadow-blue-500/30 text-lg">
+                    Create Free Account
+                </a>
+                <a href="/login"
+                    class="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 hover:scale-[1.02] transition shadow-sm text-lg">
+                    Studio Login
+                </a>
+            </div>
+
+            <div class="relative max-w-5xl mx-auto group">
+                <div
+                    class="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-[2.6rem] opacity-10 blur group-hover:opacity-20 transition duration-500">
+                </div>
+                <div class="bg-slate-900 rounded-[2.5rem] p-3 shadow-2xl border border-slate-800 relative">
+                    <div class="bg-slate-950 rounded-[2rem] overflow-hidden border border-slate-800 ratio-video">
+                        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="ISKAN Studio Dashboard"
+                            class="w-full object-cover aspect-[16/9] opacity-90 group-hover:scale-[1.01] transition duration-700">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-28 px-6 bg-slate-50/70 border-y border-slate-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">Core Capabilities</h2>
+                <p class="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">Built for Professional
+                    Workflows</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M3 8V6a2 2 0 012-2h2M17 4h2a2 2 0 012 2v2M21 16v2a2 2 0 01-2 2h-2M7 20H5a2 2 0 01-2-2v-2">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Vector Generation</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">High-fidelity SVG/PNG exports ensuring your
+                        barcodes are scannable at any size, from micro-labels to large shipping crates.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div
+                        class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V7M4 7a2 2 0 012-2h12a2 2 0 012 2M4 7l8 5 8-5M12 12V4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">External Data Sync</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Connect Excel, CSV, or live REST APIs. Map fields
+                        directly to your labels and generate thousands of unique assets in one click.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div
+                        class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 11-8 0 4 4 0 018 0zm7-1h3m-3 3h3">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Enterprise Security</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Encrypted cloud storage for your templates,
+                        role-based access control, and dedicated audit logs for sensitive operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="py-28 px-6 overflow-hidden bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-16 lg:gap-20 items-center">
+                <div class="flex-1 w-full">
+                    <h2 class="text-4xl font-black tracking-tight text-slate-900 mb-12 sm:text-5xl">From Design to Print
+                        in 3 Steps</h2>
+                    <div class="space-y-10">
+                        <div class="flex gap-6 group">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-blue-500/20">
+                                1
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Build Your Template</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">Use our drag-and-drop designer to
+                                    place barcodes, QR codes, logos, and dynamic text fields on your canvas.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 group">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-blue-500/20">
+                                2
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Map Live Data</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">Import your product inventory via
+                                    Excel or API. ISKAN Studio automatically populates fields for batch generation.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 group">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-blue-500/20">
+                                3
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Instant Scale Printing</h4>
+                                <p class="text-slate-500 text-sm leading-relaxed">Download as a high-res PDF or connect
+                                    directly to thermal Zebra printers via our secure local agent.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full relative">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-3xl rotate-2 opacity-5 blur-sm">
+                    </div>
+                    <div class="relative bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-2xl">
+                        <div class="flex gap-2 mb-6">
+                            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-mono text-xs">
+                                    &lt;/&gt;</div>
+                                <div class="flex-1">
+                                    <div class="h-2.5 bg-slate-700 rounded-full w-3/4"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-mono text-xs">
+                                    DB</div>
+                                <div class="flex-1">
+                                    <div class="h-2.5 bg-slate-700 rounded-full w-1/2"></div>
+                                </div>
+                            </div>
+                            <div
+                                class="p-6 bg-slate-800/30 rounded-2xl border border-slate-800/80 flex flex-col items-center justify-center mt-6 py-10">
+                                <div class="bg-white p-4 rounded-xl shadow-lg mb-4">
+                                    <div class="w-32 h-12 flex gap-1 items-center bg-white">
+                                        <div class="bg-slate-900 h-full w-2"></div>
+                                        <div class="bg-slate-900 h-full w-1"></div>
+                                        <div class="bg-slate-900 h-full w-3"></div>
+                                        <div class="bg-slate-900 h-full w-1"></div>
+                                        <div class="bg-slate-900 h-full w-2"></div>
+                                        <div class="bg-slate-900 h-full w-4"></div>
+                                        <div class="bg-slate-900 h-full w-1"></div>
+                                        <div class="bg-slate-900 h-full w-2"></div>
+                                    </div>
+                                </div>
+                                <div class="h-2.5 bg-slate-700 rounded-full w-24"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.12),transparent_45%)]">
+        </div>
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 items-center border-b border-slate-800 pb-16">
+                <div>
+                    <p class="text-4xl md:text-5xl font-black mb-2 gradient-text">5,000+</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Global Clients</p>
+                </div>
+                <div>
+                    <p class="text-4xl md:text-5xl font-black mb-2 gradient-text">10M+</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Labels Printed</p>
+                </div>
+                <div>
+                    <p class="text-4xl md:text-5xl font-black mb-2 gradient-text">99.9%</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Uptime SLA</p>
+                </div>
+                <div>
+                    <p class="text-4xl md:text-5xl font-black mb-2 gradient-text">24/7</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Expert Support</p>
+                </div>
+            </div>
+
+            <div class="mt-20 max-w-3xl mx-auto">
+                <p class="text-2xl font-medium italic text-slate-300 leading-relaxed">
+                    "ISKAN Studio cut our labeling process from hours to minutes. The API integration is a game-changer
+                    for our warehouse operations."
+                </p>
+                <div class="mt-8 flex items-center justify-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
+                        JD
+                    </div>
+                    <div class="text-left">
+                        <p class="font-bold text-white">John Doe</p>
+                        <p class="text-sm text-slate-400 font-medium">Operations Director, Global Logistics Inc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-28 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">Scalable Plans for Any
+                    Business</h2>
+                <p class="text-slate-500 mt-4 text-lg font-medium">Start for free, upgrade as your inventory grows.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
+                <div
+                    class="p-8 bg-white border border-slate-200 rounded-3xl flex flex-col group hover:border-blue-500 transition-colors duration-300 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Basic</h3>
+                    <div class="text-4xl font-black text-slate-900 mb-6">₱499<span
+                            class="text-sm text-slate-400 font-medium tracking-normal">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            5 Saved Templates
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            High-res PNG Export
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Standard Designer Tools
+                        </li>
+                    </ul>
+                    <a href="/register"
+                        class="w-full py-3 text-center border border-slate-200 font-bold rounded-xl hover:bg-slate-50 transition">Select
+                        Basic</a>
+                </div>
+
+                <div
+                    class="p-8 bg-slate-900 text-white border-2 border-blue-600 rounded-3xl flex flex-col relative md:scale-105 shadow-2xl">
+                    <span
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
+                        Most Popular
+                    </span>
+                    <h3 class="text-lg font-bold mb-2 text-white">Starter</h3>
+                    <div class="text-4xl font-black mb-6 text-white">₱799<span
+                            class="text-sm text-slate-400 font-medium tracking-normal">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="text-sm font-medium flex gap-3 text-slate-200">
+                            <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            20 Saved Templates
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-200">
+                            <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Excel & CSV Binding
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-200">
+                            <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Thermal Printing Agent
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-200">
+                            <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Priority Support
+                        </li>
+                    </ul>
+                    <a href="/register"
+                        class="w-full py-3 text-center bg-blue-600 font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition">Select
+                        Starter</a>
+                </div>
+
+                <div
+                    class="p-8 bg-white border border-slate-200 rounded-3xl flex flex-col group hover:border-blue-500 transition-colors duration-300 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Pro</h3>
+                    <div class="text-4xl font-black text-slate-900 mb-6">₱1,500<span
+                            class="text-sm text-slate-400 font-medium tracking-normal">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Unlimited Templates
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Live REST API Sync
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            White-label Designer
+                        </li>
+                        <li class="text-sm font-medium flex gap-3 text-slate-600">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Dedicated Account Mgr
+                        </li>
+                    </ul>
+                    <a href="/register"
+                        class="w-full py-3 text-center border border-slate-200 font-bold rounded-xl hover:bg-slate-50 transition">Select
+                        Pro</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-slate-50">
+        <div
+            class="max-w-5xl mx-auto bg-blue-600 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-blue-500/30">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24"></div>
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-black mb-8 leading-tight">Ready to Modernize Your <br> Labeling
+                    Workflow?</h2>
+                <p class="text-blue-100 text-lg mb-10 max-w-xl mx-auto font-medium">Join 5,000+ businesses creating
+                    high-performance assets every day. No credit card required to start.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="/register"
+                        class="w-full sm:w-auto px-10 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition text-lg shadow-lg">Sign
+                        Up Now</a>
+                    <a href="/designer"
+                        class="w-full sm:w-auto px-10 py-4 bg-blue-700 text-white font-bold rounded-2xl hover:bg-blue-800 transition text-lg">Live
+                        Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 border-t border-slate-100 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-2">
+                <div
+                    class="h-8 w-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-sm">
+                    IS</div>
+                <span class="font-bold text-slate-900">ISKAN Studio</span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-8 text-sm font-semibold text-slate-400">
+                <a href="#" class="hover:text-slate-900 transition">Privacy</a>
+                <a href="#" class="hover:text-slate-900 transition">Terms</a>
+                <a href="/help" class="hover:text-slate-900 transition">Documentation</a>
+                <a href="mailto:support@iskanstudio.example" class="hover:text-slate-900 transition">Support</a>
+            </div>
+            <p class="text-xs text-slate-400 font-medium">© 2026 ISKAN Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile dropdown when a navigation link is clicked
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>

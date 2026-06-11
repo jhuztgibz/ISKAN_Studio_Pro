@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISKAN Studio - User Manual</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+
+        /* Plain CSS replacement for Tailwind @apply rules (no build step required) */
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: #fff;
+            font-weight: 900;
+            font-size: 1rem;
+            margin-right: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 10px 15px rgba(2, 6, 23, 0.08);
+            outline: 4px solid rgba(239, 246, 255, 1);
+            transition: transform .18s ease-in-out;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1.25rem;
+            border-radius: 1rem;
+            transition: all .25s ease;
+            border: 1px solid transparent;
+            background: transparent;
+        }
+
+        .step-item:hover {
+            background: #fff;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+            border-color: #f1f5f9;
+            transform: translateY(-4px);
+        }
+
+        .kb-shortcut {
+            padding: .25rem .5rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: .375rem;
+            font-size: .75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+            font-weight: 700;
+            box-shadow: 0 1px 2px rgba(2, 6, 23, 0.04);
+            color: #334155;
+        }
+
+        section {
+            scroll-margin-top: 6rem;
+        }
+
+        .prose-h3 {
+            font-size: 1.125rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 2rem;
+            margin-bottom: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .prose-p {
+            color: #475569;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .nav-link-active {
+            background: #2563eb !important;
+            color: #fff !important;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.16) !important;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans">
+    <nav class="sticky top-0 bg-white border-b border-slate-200 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-black text-blue-600 tracking-tighter uppercase">ISKAN Studio</span>
+                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded uppercase">Pro
+                    Manual</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/"
+                    class="text-sm font-bold text-slate-500 hover:text-blue-600 transition-all flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Designer
+                </a>
+                {% if session.user_id %}
+                <a href="/logout" class="text-sm font-bold text-slate-500 hover:text-red-600">Logout</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <!-- Sidebar Navigation -->
+        <aside class="md:col-span-1">
+            <div class="sticky top-24 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-3">Documentation</p>
+                <a href="#getting-started"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">1.
+                    Getting Started</a>
+                <a href="#file-management"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">2.
+                    File & Templates</a>
+                <a href="#inserting-objects"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">3.
+                    Inserting Objects</a>
+                <a href="#advanced-qr"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all pl-6">↳
+                    Advanced QR Codes</a>
+                <a href="#working-with-tables"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">4.
+                    Working with Tables</a>
+                <a href="#data-binding"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">5.
+                    Dynamic Data Binding</a>
+                <a href="#api-integration"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all pl-6">↳
+                    API Data Source</a>
+                <a href="#printing"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">6.
+                    Printing & Export</a>
+                <a href="#troubleshooting"
+                    class="block px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:shadow-sm hover:text-blue-600 rounded-md transition-all">7.
+                    Troubleshooting</a>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="md:col-span-3 space-y-16">
+            <!-- Welcome Section -->
+            <section id="introduction">
+                <h1 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Enterprise Label Designer</h1>
+                <p class="text-xl text-slate-500">A comprehensive guide to designing, mapping, and printing labels with
+                    ISKAN Studio.</p>
+            </section>
+
+            <!-- Section 1 -->
+            <section id="getting-started">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">Getting Started</h2>
+                <p class="text-lg text-slate-600 mb-6 leading-relaxed">ISKAN Studio is a professional label designer.
+                    Before designing, set your canvas size in the left sidebar.</p>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 mb-4">Initial Setup Steps:</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start"><span class="step-number me-2">1. </span>
+                            <div><strong>Choose Units:</strong> Switch between Pixels, Inches, or Centimeters.
+                                <p class="text-xs text-slate-400 mt-1">Note: We recommend Pixels for web-only designs
+                                    and CM/Inches for physical printing accuracy.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start"><span class="step-number me-2">2. </span>
+                            <div><strong>Set Dimensions:</strong> Enter the Width and Height of a
+                                <strong>single</strong> sticker.
+                                <p class="text-xs text-slate-400 mt-1">Example: For a standard shipping label, use 4x6
+                                    inches.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start"><span class="step-number me-2">3. </span>
+                            <div><strong>Visual Aids:</strong> Enable "Show Grid" or "Show Ruler" to help align objects.
+                                <p class="text-xs text-slate-400 mt-1">The grid snaps every 20 pixels by default.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 2: File Management -->
+            <section id="file-management">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">File & Project Management</h2>
+                <p class="text-lg text-slate-600 mb-6 leading-relaxed">Manage your designs as reusable templates or
+                    export them for external use.</p>
+
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="step-item bg-white border border-slate-200 shadow-sm">
+                        <div class="step-number">01</div>
+                        <div>
+                            <strong class="text-slate-900">New Design</strong>
+                            <p class="text-sm text-slate-500 mt-1">Clears the current canvas and resets all dimensions
+                                to the default 700x500px. A confirmation prompt prevents accidental data loss.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item bg-white border border-slate-200 shadow-sm">
+                        <div class="step-number">02</div>
+                        <div>
+                            <strong class="text-slate-900">Save Template (Template Library)</strong>
+                            <p class="text-sm text-slate-500 mt-1">Saves the current design into the application's
+                                <strong>Template Library</strong>. When you save, provide a name and optional
+                                description — the template (objects, positions, styles, and data mapping)
+                                is stored for quick access. After saving you can reopen the template for editing
+                                or send it directly to printing without downloading a file.
+                            </p>
+                            <p class="text-xs text-slate-400 mt-2">If you need a portable backup, use <strong>Export
+                                    Template</strong> to download a <code class="bg-slate-100 px-1 rounded">.json</code>
+                                file.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item bg-white border border-slate-200 shadow-sm">
+                        <div class="step-number">03</div>
+                        <div>
+                            <strong class="text-slate-900">Open Template (My Templates)</strong>
+                            <p class="text-sm text-slate-500 mt-1">Open the <strong>My Templates</strong> panel from the
+                                File menu or the Templates button. Select any saved template to load it into the
+                                canvas for further editing or printing. You can also <strong>Import Template</strong>
+                                to restore designs from a previously exported <code
+                                    class="bg-slate-100 px-1 rounded">.json</code>
+                                file.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item bg-white border border-slate-200 shadow-sm">
+                        <div class="step-number">04</div>
+                        <div>
+                            <strong class="text-slate-900">Save as PNG</strong>
+                            <p class="text-sm text-slate-500 mt-1">Exports the current view of the canvas as a
+                                high-resolution image file. If you have a multi-label layout (e.g., 3x7), this will
+                                export the <strong>first page</strong> of that layout.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex gap-3 items-center">
+                    <div class="text-emerald-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs text-emerald-800 font-medium"><strong>Pro Tip:</strong> Templates saved to the
+                            Template Library are available on this machine for quick reuse. Use <strong>Export
+                                Template</strong> to create a JSON backup for sharing or long-term archival.</p>
+                        <p class="text-xs text-emerald-800 font-medium mt-1">When collaborating, export and share the
+                            JSON file so other users can import and reproduce your design exactly.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section id="inserting-objects">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">3. Inserting Objects</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-blue-600 mb-2">Barcodes & QR</h4>
+                        <p class="text-sm text-slate-500 mb-3">Supports Code128, EAN13, and UPC. Vector-based rendering
+                            ensures crisp lines.</p>
+                        <ul class="text-[11px] space-y-1 text-slate-400 font-medium">
+                            <li>• <strong>Code128:</strong> Alphanumeric data.</li>
+                            <li>• <strong>EAN13:</strong> Exactly 12 or 13 digits.</li>
+                            <li>• <strong>UPC:</strong> Exactly 11 or 12 digits.</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-emerald-600 mb-2">Text & Labels</h4>
+                        <p class="text-sm text-slate-500">Click to select, double-click to edit. Use the sidebar to
+                            change font weight, family, and size.</p>
+                    </div>
+                    <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-amber-600 mb-2">Shapes</h4>
+                        <p class="text-sm text-slate-500">Rectangles and Circles. Essential for creating containers,
+                            separators, or highlighting key data.</p>
+                    </div>
+                    <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-violet-600 mb-2">Logos</h4>
+                        <p class="text-sm text-slate-500">Upload PNG/JPG images. Use the <strong>Fit Design</strong>
+                            button in the sidebar to auto-scale high-res images to your canvas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Advanced QR -->
+            <section id="advanced-qr">
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Advanced QR Customization</h2>
+                <p class="prose-p">Our QR generator allows for high-level branding. Select a QR code on your canvas to
+                    see these options:</p>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-tighter">1. Branding with
+                            Logos</h4>
+                        <p class="text-sm text-slate-500">Upload a logo to place it inside the QR code. You can choose
+                            positions (Center, Corners) and enable <strong>Rounded Logo</strong> for a modern look.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-tighter">2. Module Shapes
+                        </h4>
+                        <p class="text-sm text-slate-500">Change the QR "dots" from standard squares to
+                            <strong>Rounded</strong> or <strong>Circles</strong>. This enhances the aesthetic of luxury
+                            or tech labels.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-tighter">3. Quiet Zones
+                            (Padding)</h4>
+                        <p class="text-sm text-slate-500">Add padding and change the "Quiet Zone Color" (background
+                            behind the logo) to ensure the QR code remains scannable even with a logo overlay.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Keyboard Shortcuts -->
+            <section id="shortcuts">
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Keyboard Shortcuts</h2>
+                <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Delete Selection</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Del / Backspace</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Move Object</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Arrow Keys</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Copy Object</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Ctrl + C</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Paste Object</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Ctrl + V</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Zoom In / Out</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Ctrl + MouseWheel</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-sm font-medium">Undo</span>
+                            <span class="kb-shortcut bg-slate-700 border-slate-600 text-white">Ctrl + Z</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Pro Tip</p>
+                        <p class="text-xs text-slate-400 italic">Hold <strong>Shift</strong> while dragging to lock
+                            movement to a horizontal or vertical axis.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section id="working-with-tables">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">4. Working with Tables</h2>
+                <p class="text-slate-600 mb-4">Tables are perfect for creating structured grids for technical specs or
+                    price lists.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-xl">
+                    <h4 class="font-bold mb-2">Dynamic vs. Static</h4>
+                    <p class="text-sm text-blue-800">Use the sidebar to change Rows and Columns instantly. If you need
+                        to resize a <strong>specific cell</strong>, click "Ungroup into Shapes" to edit cells
+                        individually.</p>
+                </div>
+            </section>
+
+            <!-- Section 5 -->
+            <section id="data-binding">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">5. Dynamic Data Binding</h2>
+                <div
+                    class="bg-blue-600 rounded-2xl p-8 mb-8 text-white shadow-xl shadow-blue-200 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold mb-2">The Concept</h3>
+                        <p class="text-blue-100 leading-relaxed">Design your layout <strong>once</strong>, then map
+                            fields to your data source. ISKAN Studio swaps the values automatically during preview and
+                            printing, allowing you to generate thousands of unique labels in seconds.</p>
+                    </div>
+                    <svg class="absolute right-[-20px] bottom-[-20px] w-48 h-48 text-blue-500 opacity-20"
+                        fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-8 9z" />
+                    </svg>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div
+                        class="flex items-center gap-6 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 transition-all group">
+                        <div
+                            class="step-number !from-slate-700 !to-slate-900 group-hover:scale-110 transition-transform">
+                            01</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                                </svg>
+                                <strong class="text-slate-900 text-lg">Connect Data</strong>
+                            </div>
+                            <p class="text-slate-500 text-sm">Upload an <strong>Excel/CSV</strong> or connect a
+                                <strong>REST API</strong> in the Data Source tab.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-6 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 transition-all group">
+                        <div
+                            class="step-number !from-slate-700 !to-slate-900 group-hover:scale-110 transition-transform">
+                            02</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5m-4-4h.01" />
+                                </svg>
+                                <strong class="text-slate-900 text-lg">Select Canvas Object</strong>
+                            </div>
+                            <p class="text-slate-500 text-sm">Return to the designer and select any
+                                <strong>Text</strong>, <strong>Barcode</strong>, or <strong>QR Code</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-6 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 transition-all group">
+                        <div
+                            class="step-number !from-slate-700 !to-slate-900 group-hover:scale-110 transition-transform">
+                            03</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                                <strong class="text-slate-900 text-lg">Link to Column</strong>
+                            </div>
+                            <p class="text-slate-500 text-sm">In the Properties panel, use the <strong>Link to
+                                    Column</strong> dropdown to pick a field from your data.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-6 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 transition-all group">
+                        <div class="step-number group-hover:scale-110 transition-transform">04</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <strong class="text-slate-900 text-lg">Preview & Print</strong>
+                            </div>
+                            <p class="text-slate-500 text-sm">Click rows in the data table to watch your design update.
+                                Use <strong>Print Selection</strong> to export the results.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="mt-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl shadow-sm">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 bg-amber-500 text-white rounded-lg shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-bold text-amber-900">Pro Tip: Smart Quantity Control</h4>
+                    </div>
+                    <p class="text-sm text-amber-800 leading-relaxed">If your spreadsheet contains a column named <code
+                            class="px-1.5 py-0.5 bg-amber-200/50 rounded text-amber-900 font-bold">Qty</code>, <code
+                            class="px-1.5 py-0.5 bg-amber-200/50 rounded text-amber-900 font-bold">Quantity</code>, or
+                        <code class="px-1.5 py-0.5 bg-amber-200/50 rounded text-amber-900 font-bold">Count</code>,
+                        ISKAN Studio will automatically generate that exact number of labels for each record.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section: API Integration -->
+            <section id="api-integration">
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-4">REST API Integration</h2>
+                <p class="prose-p">Connect ISKAN Studio directly to your ERP or Warehouse Management System via live API
+                    endpoints.</p>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 shrink-0">
+                            1</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm uppercase">Configure Endpoint</h4>
+                            <p class="text-sm text-slate-500">Click <strong>API Source</strong> in the ribbon. Enter
+                                your full REST URL (e.g., <code
+                                    class="text-blue-600">https://api.myapp.com/products</code>).</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 shrink-0">
+                            2</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm uppercase">Authentication & Headers</h4>
+                            <p class="text-sm text-slate-500">Provide the <strong>Header Name</strong> (default is <code
+                                    class="text-slate-700">x-api-key</code> or <code
+                                    class="text-slate-700">Authorization</code>) and your secure Token.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 shrink-0">
+                            3</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm uppercase">Data Normalization</h4>
+                            <p class="text-sm text-slate-500">ISKAN Studio automatically searches the JSON response for
+                                common data arrays like <code class="text-slate-700">data</code>, <code
+                                    class="text-slate-700">items</code>, or <code class="text-slate-700">results</code>.
+                                If found, it populates the table instantly.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-800 rounded-xl">
+                    <h5 class="text-white text-xs font-bold uppercase mb-2">Security Note</h5>
+                    <p class="text-slate-400 text-xs leading-relaxed">Your API tokens are handled client-side. ISKAN
+                        Studio
+                        does not store your credentials on any server; they persist only for your active session.</p>
+                </div>
+            </section>
+
+            <hr class="border-slate-200">
+
+            <!-- Section 6 -->
+            <section id="printing">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">6. Printing & Export</h2>
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-800">Standard Printing (A4/Letter)</h4>
+                        <p class="text-slate-500">Set "Print Layout" rows and columns (e.g., 3x7) to tile labels on a
+                            single sheet. Click "Print" to generate a high-quality PDF.</p>
+                    </div>
+                    <div class="mt-8">
+                        <h4 class="text-lg font-bold text-orange-600 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Thermal Printing (Zebra/TSC)
+                        </h4>
+                        <p class="text-slate-500 mb-4">For direct thermal printing, you must use the <strong>Web-Print
+                                Connector</strong>.</p>
+                        <ol class="list-decimal ml-5 space-y-2 text-sm text-slate-600">
+                            <li>Run the Web-Print Agent on your PC.</li>
+                            <li>Click the <span class="font-bold text-emerald-600">Connect</span> button in the top
+                                right.</li>
+                            <li>Select your physical printer from the dropdown.</li>
+                            <li>Use the <span class="font-bold text-orange-600 uppercase">Print Label</span> button to
+                                send data directly.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Troubleshooting -->
+            <section id="troubleshooting">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6">7. Troubleshooting</h2>
+                <div class="space-y-4">
+                    <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-rose-600 text-sm mb-1 uppercase">"Agent: Offline"</h4>
+                        <p class="text-sm text-slate-500">Ensure the Python print engine is running. If it is running
+                            but still offline, visit <code
+                                class="bg-slate-100 px-1 rounded">https://localhost:8182</code> in your browser and
+                            click "Advanced" -> "Proceed" to trust the local SSL certificate.</p>
+                    </div>
+                    <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-rose-600 text-sm mb-1 uppercase">Barcode Generation Error</h4>
+                        <p class="text-sm text-slate-500">Standard Barcodes (EAN13/UPC) have strict digit requirements.
+                            EAN13 must have 12 or 13 digits. If your data doesn't match, the barcode will not render.
+                            Use "Code128" for flexible alphanumeric data.</p>
+                    </div>
+                    <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-rose-600 text-sm mb-1 uppercase">Print Preview looks blurry</h4>
+                        <p class="text-sm text-slate-500">This usually happens when your "Canvas Size" is set to a low
+                            pixel value. Increase your canvas dimensions or switch to "Inches" to ensure the internal
+                            resolution is high enough for sharp printing.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="pt-12 border-t border-slate-200 text-center">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">&copy; 2026 ISKAN Studio
+                    ENTERPRISE
+                    SOLUTIONS</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Simple scroll spy for sidebar navigation
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('aside a');
+
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.toggle('nav-link-active', link.getAttribute('href').includes(current));
+                link.classList.toggle('text-slate-600', !link.getAttribute('href').includes(current));
+            });
+        });
+    </script>
+</body>
+
+</html>
