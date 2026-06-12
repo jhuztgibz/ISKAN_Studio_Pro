@@ -118,10 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabDesign = document.getElementById("tabDesign");
   const tabUploadData = document.getElementById("tabUploadData");
   const tabTemplates = document.getElementById("tabTemplates");
+  const tabHistory = document.getElementById("tabHistory");
   const designView = document.getElementById("designView");
   const dataView = document.getElementById("dataView");
   const templatesView = document.getElementById("templatesView");
+  const historyView = document.getElementById("historyView");
   const templateGrid = document.getElementById("templateGrid");
+  const historyTableBody = document.getElementById("historyTableBody");
   const importExcelBtn = document.getElementById("importExcelBtn");
   const importApiBtn = document.getElementById("importApiBtn");
   const importFileModal = document.getElementById("importFileModal");
@@ -134,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const apiHeaderNameInput = document.getElementById("apiHeaderNameInput");
   const apiTokenInput = document.getElementById("apiTokenInput");
   const apiFetchBtn = document.getElementById("apiFetchBtn");
+  const apiSaveBtn = document.getElementById("apiSaveBtn");
+  const apiRetrieveBtn = document.getElementById("apiRetrieveBtn");
   const clearDataBtn = document.getElementById("clearDataBtn");
 
   const excelUpload = document.getElementById("excelUpload");
@@ -142,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const propDataBinding = document.getElementById("propDataBinding");
   const totalItemsCount = document.getElementById("totalItemsCount");
   const selectedItemsCount = document.getElementById("selectedItemsCount");
+  let printHistory = [];
   let uploadedData = [];
 
   // Variables for subscription forfeiture logic
@@ -686,14 +692,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = await callAgent("print", {
         printer: selectedPrinter,
-        data: canvases.map((canvas) => ({
+        data: canvases.map((c) => ({
           format: "raw",
           flavor: "text", // Send as plain text ZPL commands
-          data: canvasToZPL(canvas),
+          data: canvasToZPL(c),
         })),
       });
 
       if (result === "Success") {
+        const selectedCheckboxes = document.querySelectorAll(".row-checkbox:checked");
+        const rows = Array.from(selectedCheckboxes).map(cb => uploadedData[parseInt(cb.dataset.index)]);
+        savePrintHistory(rows.length > 0 ? rows : [{ manual_print: true, date: new Date().toISOString() }]);
         alert("Successfully sent to printer.");
       } else {
         alert("Printer agent returned an error: " + result);
@@ -1425,16 +1434,222 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ribbonSpacer) ribbonSpacer.classList.toggle("hidden", isDataView);
   }
 
+  let currentApiConfigs = [];
+
+  async function loadApiConfig() {
+    // ... (no changes here, keeping existing implementation)
+    const modal = document.getElementById("apiSelectionModal");
+    const listContainer = document.getElementById("apiConfigList");
+    if (!modal || !listContainer) return;
+
+    try {
+      modal.classList.remove("hidden");
+      listContainer.innerHTML = '<div class="p-4 text-center text-slate-400 italic">Loading saved configs...</div>';
+
+      const response = await fetch("/api/api-config");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || `Server error: ${response.status}`);
+      }
+
+        currentApiConfigs = await response.json();
+      if (!currentApiConfigs || currentApiConfigs.length === 0) {
+          listContainer.innerHTML = '<div class="p-8 text-center text-slate-400">No saved configurations found.</div>';
+          return;
+      }
+
+        listContainer.innerHTML = currentApiConfigs.map((config, idx) => `
+          <div class="flex items-center justify-between p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors group">
+            <div class="cursor-pointer flex-1" onclick="selectApiConfig(${idx})">
+              <div class="font-bold text-slate-800 text-sm">${config.name}</div>
+              <div class="text-[10px] text-slate-400 truncate max-w-[200px]">${config.url}</div>
+            </div>
+            <button onclick="deleteApiConfig(${config.id}, event)" class="p-2 text-slate-300 hover:text-rose-500 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </div>
+        `).join('');
+    } catch (err) {
+      console.error("Failed to load API config:", err);
+      listContainer.innerHTML = `<div class="p-4 text-center text-rose-500 italic font-medium text-[10px] leading-tight">${err.message}</div>`;
+      alert("Error: " + err.message);
+    }
+  }
+
+  window.selectApiConfig = (index) => {
+    const config = currentApiConfigs[index];
+    if (!config) return;
+
+    apiUrlInput.value = config.url || '';
+    apiHeaderNameInput.value = config.header_name || '';
+    apiTokenInput.value = config.token || '';
+    document.getElementById("apiSelectionModal").classList.add("hidden");
+  };
+
+  window.deleteApiConfig = async (id, event) => {
+    event.stopPropagation();
+    if (!confirm("Delete this configuration?")) return;
+    const res = await fetch(`/api/api-config/${id}`, { method: 'DELETE' });
+    if (res.ok) loadApiConfig();
+  };
+
+  async function saveApiConfig() {
+    const apiSaveBtnOriginalHTML = apiSaveBtn.innerHTML;
+    apiSaveBtn.disabled = true;
+    apiSaveBtn.innerHTML = `
+      <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="truncate">Wait...</span>`;
+    const name = prompt("Enter a name for this API configuration:", "My API Config");
+    if (!name) return;
+
+    const config = {
+      name: name,
+      url: apiUrlInput.value.trim(),
+      header_name: apiHeaderNameInput.value.trim(),
+      token: apiTokenInput.value.trim()
+    };
+
+    try {
+      const response = await fetch("/api/api-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(config)
+      });
+      if (response.ok) {
+        console.log("API config saved successfully.");
+        alert("API Settings saved successfully!");
+      } else {
+        const err = await response.json();
+        console.error("Failed to save API settings:", err);
+        alert("Failed to save settings: " + (err.error || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Save API Config Error:", err);
+      alert("Failed to save settings: " + err.message);
+    } finally {
+      // Always restore the button state
+      apiSaveBtn.disabled = false;
+      apiSaveBtn.innerHTML = apiSaveBtnOriginalHTML;
+    }
+  }
+
+  // Attach API Config listeners
+  if (apiSaveBtn) {
+    apiSaveBtn.addEventListener("click", saveApiConfig);
+  }
+  if (apiRetrieveBtn) {
+    apiRetrieveBtn.addEventListener("click", loadApiConfig);
+  }
+
+  const closeApiModalBtn = document.getElementById("closeApiModalBtn");
+  if (closeApiModalBtn) {
+    closeApiModalBtn.addEventListener("click", () =>
+      document.getElementById("apiSelectionModal").classList.add("hidden"),
+    );
+  }
+
+  /**
+   * Print History API Interactions
+   */
+  async function savePrintHistory(dataRows) {
+    try {
+      await fetch("/api/print-history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          template_name: currentTemplateName || "Unnamed Template",
+          data: dataRows,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to save print history:", err);
+    }
+  }
+
+  async function loadPrintHistory() {
+    if (!historyTableBody) return;
+    historyTableBody.innerHTML =
+      '<tr><td colspan="4" class="p-12 text-center animate-pulse">Loading history...</td></tr>';
+    try {
+      const response = await fetch("/api/print-history");
+      printHistory = await response.json();
+      if (printHistory.length === 0) {
+        historyTableBody.innerHTML =
+          '<tr><td colspan="4" class="p-12 text-center text-slate-400 italic">No print history found.</td></tr>';
+        return;
+      }
+      historyTableBody.innerHTML = printHistory
+        .map(
+          (h) => `
+                <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-slate-600 font-medium">${new Date(h.created_at).toLocaleString()}</td>
+                    <td class="px-6 py-4 text-slate-600 font-bold">${h.template_name}</td>
+                    <td class="px-6 py-4 text-slate-500">${h.row_count} records</td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end items-center gap-2">
+                            <button onclick="window.reuseHistoryData(${h.id})" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border border-blue-100 shadow-sm group/reuse" 
+                                title="Reload this data into Data Source">
+                                <svg class="w-3.5 h-3.5 transition-transform group-hover/reuse:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Reuse Data
+                            </button>
+                            <button onclick="window.deleteHistoryRecord(${h.id})" class="text-slate-300 hover:text-rose-500 transition-colors p-1.5 hover:bg-rose-50 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                        </div>
+                    </td>
+                </tr>
+            `,
+        )
+        .join("");
+    } catch (err) {
+      historyTableBody.innerHTML =
+        '<tr><td colspan="4" class="p-12 text-center text-rose-500">Failed to load history.</td></tr>';
+    }
+  }
+
+  window.deleteHistoryRecord = async (id) => {
+    if (!confirm("Delete this history record?")) return;
+    const res = await fetch(`/api/print-history/${id}`, { method: "DELETE" });
+    if (res.ok) loadPrintHistory();
+  };
+
+  window.reuseHistoryData = (id) => {
+    const record = printHistory.find((r) => r.id === id);
+    if (!record || !record.data_source) return;
+
+    if (confirm(`Reload ${record.row_count} records from this print job? This will replace your current Data Source mapping.`)) {
+      // Clear current search filter to ensure reloaded data is visible
+      if (dataSearchInput) dataSearchInput.value = "";
+
+      uploadedData = record.data_source.map((row, idx) => {
+        const { __originalIndex, ...cleanRow } = row;
+        return { ...cleanRow, __originalIndex: idx };
+      });
+      dataColumns = uploadedData.length > 0 ? Object.keys(uploadedData[0]).filter(k => k !== '__originalIndex') : [];
+
+      renderDataTable();
+      updateBindingOptions();
+      updatePrintAllRowsButtonState();
+      updateTabUI("data");
+    }
+  };
+
   function updateTabUI(activeTab) {
     const viewMap = {
       design: designView,
       data: dataView,
       templates: templatesView,
+      history: historyView,
     };
     const tabMap = {
       design: tabDesign,
       data: tabUploadData,
       templates: tabTemplates,
+      history: tabHistory,
     };
     console.log("Switching to tab:", activeTab);
 
@@ -1470,6 +1685,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Context-specific ribbon and data loading
     if (activeTab === "data") {
       toggleRibbonForDataView(true);
+      console.log("Data tab activated, loading API config...");
+    } else if (activeTab === "history") {
+      toggleRibbonForDataView(false);
+      loadPrintHistory();
     } else if (activeTab === "templates") {
       toggleRibbonForDataView(false);
       loadTemplatesFromDB();
@@ -1485,6 +1704,9 @@ document.addEventListener("DOMContentLoaded", () => {
   tabDesign.addEventListener("click", () => updateTabUI("design"));
   if (tabTemplates) {
     tabTemplates.addEventListener("click", () => updateTabUI("templates"));
+  }
+  if (tabHistory) {
+    tabHistory.addEventListener("click", () => updateTabUI("history"));
   }
 
   async function loadTemplatesFromDB() {
@@ -1800,11 +2022,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       apiFetchBtn.disabled = true;
       apiFetchBtn.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg> Fetching...
-            `;
+        <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="truncate">Wait...</span>
+      `;
 
       try {
         const headers = {
@@ -1871,7 +2094,12 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Failed to fetch data from API: " + error.message);
       } finally {
         apiFetchBtn.disabled = false;
-        apiFetchBtn.textContent = "Fetch Data";
+        apiFetchBtn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <span class="truncate">Fetch</span>
+        `;
       }
     });
   }
@@ -2971,6 +3199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rows = parseInt(printRowsInput.value) || 1;
     const cols = parseInt(printColsInput.value) || 1;
     const labelsPerPage = rows * cols;
+    const qualityMultiplier = 2; // Increase capture resolution for sharpness
     const singleWidth = baseWidth;
     const singleHeight = baseHeight;
 
@@ -3026,10 +3255,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 2. Capture the updated canvas
-      // Use the inverse of currentZoom to capture the canvas at its 1:1 base pixel size
       const imgData = canvas.toDataURL({
         format: "png",
-        multiplier: 1 / currentZoom,
+        multiplier: qualityMultiplier / currentZoom,
+        left: 0,
+        top: 0,
+        width: baseWidth * currentZoom,
+        height: baseHeight * currentZoom
       });
       const img = await new Promise((resolve) => {
         const imgObj = new Image();
@@ -3040,15 +3272,15 @@ document.addEventListener("DOMContentLoaded", () => {
       // 3. Setup new page if needed
       if (labelIndexOnPage === 0) {
         currentPageCanvas = document.createElement("canvas");
-        currentPageCanvas.width = singleWidth * cols;
-        currentPageCanvas.height = singleHeight * rows;
+        currentPageCanvas.width = singleWidth * cols * qualityMultiplier;
+        currentPageCanvas.height = singleHeight * rows * qualityMultiplier;
         currentPageCtx = currentPageCanvas.getContext("2d");
       }
 
       // 4. Draw the label in the correct tile position
       const r = Math.floor(labelIndexOnPage / cols);
       const c = labelIndexOnPage % cols;
-      currentPageCtx.drawImage(img, c * singleWidth, r * singleHeight);
+      currentPageCtx.drawImage(img, c * singleWidth * qualityMultiplier, r * singleHeight * qualityMultiplier, singleWidth * qualityMultiplier, singleHeight * qualityMultiplier);
 
       labelIndexOnPage++;
 
@@ -3090,9 +3322,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gridWasVisible) removeGrid();
     if (rulerWasVisible) removeRuler();
 
-    const singleCanvas = await generateTiledPages();
-    const imgData = singleCanvas[0].toDataURL("image/png");
-    openPrintWindow([imgData], 1, 1, true);
+    const rows = parseInt(printRowsInput.value) || 1;
+    const cols = parseInt(printColsInput.value) || 1;
+    const pages = await generateTiledPages();
+    if (pages.length === 0) return;
+    const images = pages.map((c) => c.toDataURL("image/png"));
+    openPrintWindow(images, rows, cols, true);
+    
+    const selectedCheckboxes = document.querySelectorAll(".row-checkbox:checked");
+    const rowsToLog = Array.from(selectedCheckboxes).map(cb => uploadedData[parseInt(cb.dataset.index)]);
+    savePrintHistory(rowsToLog.length > 0 ? rowsToLog : [{ manual_print: true, date: new Date().toISOString() }]);
 
     if (gridWasVisible) drawGrid();
     if (rulerWasVisible) updateRulerUI();
@@ -3195,15 +3434,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const rows = parseInt(printRowsInput.value) || 1;
+    const cols = parseInt(printColsInput.value) || 1;
+    const pageWidth = baseWidth * cols;
+    const pageHeight = baseHeight * rows;
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
-      orientation: canvas.width > canvas.height ? "l" : "p", // Landscape if width > height
+      orientation: pageWidth > pageHeight ? "l" : "p",
       unit: "px",
-      // Use the dimensions of the first sheet provided
-      format: [
-        canvas.width * (parseInt(printColsInput.value) || 1),
-        canvas.height * (parseInt(printRowsInput.value) || 1),
-      ],
+      format: [pageWidth, pageHeight],
     });
 
     for (let i = 0; i < imageDataURLs.length; i++) {
@@ -3266,6 +3506,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvases = await generateTiledPages();
     const images = canvases.map((c) => c.toDataURL("image/png"));
     await generateMultiPagePDF(images);
+    savePrintHistory(rowsToPrint);
   });
 
   // Event listener for creating a new design

@@ -37,9 +37,9 @@ db = SQLAlchemy(app)
 # Subscription Plan Definitions
 PLANS = {
     'free': {'name': 'Free', 'limit': 1, 'price': 0},
-    'basic': {'name': 'Basic', 'limit': 5, 'price': 499},
-    'starter': {'name': 'Starter', 'limit': 20, 'price': 799},
-    'pro': {'name': 'Pro', 'limit': 9999, 'price': 1500}
+    'basic': {'name': 'Basic', 'limit': 5, 'price': 299},
+    'starter': {'name': 'Starter', 'limit': 20, 'price': 499},
+    'pro': {'name': 'Pro', 'limit': 9999, 'price': 1199}
 }
 
 # Template Model
@@ -87,6 +87,25 @@ class Subscription(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
     user = db.relationship('User', backref=db.backref('subscriptions', lazy=True))
+
+class ApiConfig(db.Model):
+    __tablename__ = 'api_configs'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(255), default="Default Config")
+    url = db.Column(db.String(500))
+    header_name = db.Column(db.String(100))
+    token = db.Column(db.String(500))
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+
+class PrintHistory(db.Model):
+    __tablename__ = 'print_history'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    template_name = db.Column(db.String(255))
+    data_source = db.Column(db.JSON, nullable=False) # List of row objects
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    row_count = db.Column(db.Integer)
 
 # Auth Decorators
 def login_required(f):
@@ -222,7 +241,7 @@ def subscribe():
         return jsonify({"error": "Missing plan or reference"}), 400
         
     # Determine amount based on plan type from UI
-    prices = {'basic': 499.00, 'starter': 799.00, 'pro': 1500.00}
+    prices = {'basic': 299.00, 'starter': 499.00, 'pro': 1199.00}
     amount_paid = prices.get(plan.lower(), 0.00)
 
     new_sub = Subscription(user_id=session['user_id'], plan_type=plan, reference_number=ref, amount=amount_paid)
@@ -436,6 +455,102 @@ def handle_template_id(template_id):
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 500
+
+@app.route('/api/api-config', methods=['GET', 'POST'])
+@login_required
+def handle_api_config():
+    user_id = session['user_id']
+
+    if request.method == 'GET':
+        try:
+            # Fetch all. If this fails, the table likely lacks columns from a previous version.
+            configs = ApiConfig.query.filter_by(user_id=user_id).all()
+            configs.sort(key=lambda x: x.id, reverse=True)
+            
+            return jsonify([{
+                "id": c.id,
+                "name": getattr(c, 'name', 'Default Config') or 'Default Config',
+                "url": c.url,
+                "header_name": c.header_name,
+                "token": c.token
+            } for c in configs])
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": "Database error: likely a schema mismatch. Please delete the 'api_configs' table and restart the app."}), 500
+
+    if request.method == 'POST':
+        data = request.get_json()
+        name = data.get('name', 'My API Config')
+        
+        # Update existing by name or create new
+        config = ApiConfig.query.filter_by(user_id=user_id, name=name).first()
+        if not config:
+            config = ApiConfig(user_id=user_id, name=name)
+            db.session.add(config)
+
+        config.url = data.get('url')
+        config.header_name = data.get('header_name')
+        config.token = data.get('token')
+
+        try:
+            db.session.commit()
+            return jsonify({"message": "API Configuration saved successfully"})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": str(e)}), 500
+
+@app.route('/api/api-config/<int:config_id>', methods=['DELETE'])
+@login_required
+def delete_api_config(config_id):
+    user_id = session['user_id']
+    config = ApiConfig.query.filter_by(id=config_id, user_id=user_id).first_or_404()
+    try:
+        db.session.delete(config)
+        db.session.commit()
+        return jsonify({"message": "Configuration deleted"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/print-history', methods=['GET', 'POST'])
+@login_required
+def handle_print_history():
+    user_id = session['user_id']
+    
+    if request.method == 'GET':
+        history = PrintHistory.query.filter_by(user_id=user_id).order_by(PrintHistory.created_at.desc()).all()
+        return jsonify([{
+            "id": h.id,
+            "template_name": h.template_name,
+            "row_count": h.row_count,
+            "data_source": h.data_source,
+            "created_at": h.created_at.isoformat()
+        } for h in history])
+
+    if request.method == 'POST':
+        data = request.get_json()
+        new_history = PrintHistory(
+            user_id=user_id,
+            template_name=data.get('template_name', 'Unnamed Template'),
+            data_source=data.get('data', []),
+            row_count=len(data.get('data', []))
+        )
+        db.session.add(new_history)
+        db.session.commit()
+        return jsonify({"message": "Print history saved", "id": new_history.id})
+
+@app.route('/api/print-history/<int:history_id>', methods=['DELETE'])
+@login_required
+def delete_print_history(history_id):
+    user_id = session['user_id']
+    item = PrintHistory.query.filter_by(id=history_id, user_id=user_id).first_or_404()
+    try:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": "History record deleted"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/generate_barcode', methods=['POST'])
 def generate_barcode():

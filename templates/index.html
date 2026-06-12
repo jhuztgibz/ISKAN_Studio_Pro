@@ -99,6 +99,10 @@
         class="px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-all">
         Data Source
       </div>
+      <div id="tabHistory"
+        class="px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-all">
+        Print History
+      </div>
       <div class="ml-auto flex items-center">
         <a href="/"
           class="px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-all border-r border-slate-200">Home</a>
@@ -874,10 +878,35 @@
         <input type="password" id="apiTokenInput" placeholder="Bearer or API Key..."
           class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none text-xs font-medium shadow-sm transition-all bg-white" />
       </div>
-      <button id="apiFetchBtn"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold text-xs uppercase tracking-widest transition-all shadow-md active:scale-95">
-        Fetch Data
-      </button>
+      <div class="flex flex-col gap-1.5 min-w-[260px]">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Actions</label>
+        <div class="flex gap-2 h-10">
+          <button id="apiSaveBtn"
+            class="flex-1 h-10 min-w-0 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 px-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+            </svg>
+            <span class="truncate">Save</span>
+          </button>
+          <button id="apiRetrieveBtn"
+            class="flex-1 h-10 min-w-0 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 px-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+            </svg>
+            <span class="truncate">Load</span>
+          </button>
+          <button id="apiFetchBtn"
+            class="flex-1 h-10 min-w-0 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 px-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+              </path>
+            </svg>
+            <span class="truncate">Fetch</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="flex-1 overflow-auto p-8">
@@ -898,6 +927,42 @@
                   Your data will appear here...
                 </div>
               </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print History View -->
+  <div id="historyView" class="hidden flex-1 flex flex-col bg-slate-50 overflow-hidden">
+    <div class="px-8 py-3 border-b border-slate-200 flex justify-between items-center bg-white shadow-sm">
+      <div>
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Print History
+        </h2>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Logs of all labels generated and
+          printed</p>
+      </div>
+    </div>
+    <div class="flex-1 overflow-auto p-8">
+      <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <table class="min-w-full text-left text-sm border-collapse">
+          <thead class="bg-slate-50">
+            <tr class="text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200">
+              <th class="px-6 py-4">Date & Time</th>
+              <th class="px-6 py-4">Template Used</th>
+              <th class="px-6 py-4">Records</th>
+              <th class="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="4" class="p-12 text-center text-slate-400 italic">No print history found.</td>
             </tr>
           </tbody>
         </table>
@@ -935,6 +1000,26 @@
             No templates found. Save a design to get started!
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Selection Modal -->
+  <div id="apiSelectionModal"
+    class="fixed inset-0 bg-slate-900 bg-opacity-50 overflow-y-auto h-full w-full hidden flex items-center justify-center z-[60] backdrop-blur-sm">
+    <div class="relative p-6 border max-w-xl w-full mx-4 shadow-2xl rounded-2xl bg-white">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest">
+          Select Configuration
+        </h3>
+        <button id="closeApiModalBtn" class="text-slate-400 hover:text-slate-600 transition-colors">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="apiConfigList" class="max-h-[500px] overflow-y-auto rounded-lg border border-slate-50">
+        <!-- API Configs will be injected here -->
       </div>
     </div>
   </div>
